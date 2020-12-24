@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, Platform } from 'react-native';
 import Button from '../../shared/Button';
 import Input from '../../shared/Input';
 import Text from '../../shared/Text';
 
-class login extends Component {
+class login extends Component<any,any> {
     render() {
         return (
             <ScrollView style={styles.container}>
-                <Text h1 bold style={styles.text}>
+                <Text tooBig bold style={styles.text}>
                 اهلا بعودتك
                 </Text>
                 <Text h5 style={{...styles.text, ...styles.firstInputFeild}}>
@@ -16,7 +16,9 @@ class login extends Component {
                 </Text>
                 <Input label="رقم الهاتف"  placeholder={"07XXXXXX"}/>
                 <Input label="كلمة المرور"  placeholder={"*****"} secureTextEntry={true}  />
-                <Button title={"تسجيل الدخول"} containerStyle={styles.button}/>
+                <Button title={"تسجيل الدخول"} containerStyle={styles.button} onPress={()=>{
+                    this.props.parentNav.replace('home')
+                }}/>
             </ScrollView>
         );
     }
@@ -27,17 +29,18 @@ const styles = StyleSheet.create({
       backgroundColor: '#fff',
       paddingTop:'10%',
       paddingLeft:'5%',
-      paddingRight:'5%'
+      paddingRight:'5%',
+      direction: Platform.OS == 'ios' ? 'ltr' : 'rtl'
     },
     text:{
         color:'#333',
-        textAlign: "right",
+        textAlign: Platform.OS == 'ios' ? "right" : 'left',
     },
     firstInputFeild:{
         marginBottom:'10%'
     },
     button:{
-        marginTop:"7§%"
+        marginTop:"7%"
     }
 });
 export default login;

@@ -1,5 +1,6 @@
 export default {
     mainColor:'#18A4E0',
+    mainColorDarken:'#0c5270',
     globalTheme:{
         Button: {
           titleStyle: {
@@ -10,7 +11,7 @@ export default {
           },
           containerStyle:{
               backgroundColor:'#18A4E0',
-              borderRadius:'50%'
+              borderRadius:50
           },
           buttonStyle:{
             backgroundColor:'#18A4E0',
@@ -22,7 +23,7 @@ export default {
             fontFamily:'custom-regular'
         },
         labelStyle:{
-            textAlign:'right',
+            textAlign:'left',
             fontFamily:'custom-bold'
         },
         // containerStyle:{

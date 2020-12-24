@@ -4,11 +4,11 @@ import Button from '../../shared/Button';
 import Input from '../../shared/Input';
 import Text from '../../shared/Text';
 
-class signup extends Component {
+class signup extends Component<any,any> {
     render() {
         return (
             <ScrollView style={styles.container}>
-                <Text h1 bold style={styles.text}>
+                <Text tooBig bold style={styles.text}>
                 اهلا بعودتك
                 </Text>
                 <Text h5 style={{...styles.text, ...styles.firstInputFeild}}>
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
           marginBottom:'10%'
       },
       button:{
-          marginTop:"7§%"
+          marginTop:"7%"
       }
 });
 export default signup;

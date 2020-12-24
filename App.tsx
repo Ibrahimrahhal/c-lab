@@ -1,13 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View, I18nManager } from 'react-native';
 import FirstLevelStackNavigator from './screens/firstLevelStackNavigator';
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { ThemeProvider } from 'react-native-elements';
 import * as Font from 'expo-font';
 import config from './config';
-
+import Text from './shared/Text';
 
 let customFonts = {
   'custom-regular': require('./assets/Cairo-Regular.ttf'),
@@ -18,7 +18,10 @@ export default class App extends Component {
   state = {
     fontsLoaded: false,
   };
-
+constructor(props:any){
+  super(props);
+  I18nManager.forceRTL(true);
+}
   async _loadFontsAsync() {
     await Font.loadAsync(customFonts);
     this.setState({ fontsLoaded: true });
@@ -28,15 +31,23 @@ export default class App extends Component {
     this._loadFontsAsync();
   }
   render() {
-    return (
-    <NavigationContainer>
-      <ThemeProvider theme={config.globalTheme as any}>
-        <View style={styles.container}>
-        {this.state.fontsLoaded &&(<FirstLevelStackNavigator/>)} 
-        </View>
-      </ThemeProvider>
-    </NavigationContainer>
-  );
+    try{
+      return (
+        <NavigationContainer>
+          <ThemeProvider theme={config.globalTheme as any}>
+            <View style={styles.container}>
+            {this.state.fontsLoaded &&(<FirstLevelStackNavigator/>)} 
+            </View>
+          </ThemeProvider>
+        </NavigationContainer>
+      );
+    }catch(e){
+      console.log(e.toString())
+      return (
+      <View style={styles.container}>
+        <Text h5> {e.toString()}</Text>
+      </View>)
+    }
 }
 }
 

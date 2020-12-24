@@ -1,17 +1,17 @@
 import React, { Component, Fragment } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import { View, StyleSheet, Dimensions, Platform } from 'react-native';
 import Text from '../../shared/Text';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import config from '../../config';
-import login from './login';
-import signup from './signup';
+import Login from './login';
+import Signup from './signup';
 import { StatusBar } from 'expo-status-bar';
 import driveCar from '../../animations/driveCar';
 import LottieView from 'lottie-react-native';
 import { StatusBarHeight } from '../../modules/utils';
 
 const Tab = createMaterialTopTabNavigator();
-class loginSignup extends Component {
+class loginSignup extends Component<any,any> {
 animation:any;
 componentDidMount() {
     this.playAnimation()
@@ -60,10 +60,15 @@ componentDidMount() {
                         shadowOpacity: 0.08,
                         shadowRadius: 16.00,
                         elevation: 24
-                    }
+                    },
                 }}>
-                    <Tab.Screen name="انشاء حساب" component={signup} />
-                    <Tab.Screen name="تسجيل الدخول" component={login} />
+                    <Tab.Screen name="تسجيل الدخول" >
+                            {props=><Login {...props} parentNav={this.props.navigation}/>}
+                    </Tab.Screen> 
+                    <Tab.Screen name="انشاء حساب" >
+                            {props=><Signup {...props} parentNav={this.props.navigation}/>}
+                    </Tab.Screen>
+
                 </Tab.Navigator>
                 </View>
             </View>
@@ -95,7 +100,8 @@ const styles = StyleSheet.create({
     bottomSideView:{
         height:'70%',
         width:'100%',
-        direction:'ltr'
+        direction:'rtl',
+        textAlign:'right'
     },
     safeArea:{
         width:'100%',

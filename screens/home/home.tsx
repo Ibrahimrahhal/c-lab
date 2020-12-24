@@ -3,6 +3,17 @@ import { View, StyleSheet, Dimensions, Alert } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import Text from '../../shared/Text';
 import * as Location from 'expo-location';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { NavigationContainer } from '@react-navigation/native';
+import MapViewRoute from './mapViewRoute';
+import * as Animatable from 'react-native-animatable';
+import SideDrawer from './SideDrawer';
+import { createStackNavigator } from '@react-navigation/stack';
+import AddCars from './reportAccidentPages/AddCars';
+import StartingPointComponent from './reportAccidentPages/StartingPointComponent';
+
+const Drawer = createDrawerNavigator();
+const Stack = createStackNavigator();
 
 class home extends Component<any,{
     location?:{
@@ -15,37 +26,34 @@ class home extends Component<any,{
         speed: number | null;
     }
 }> {
-    async componentDidMount(){
-        let { status } = await Location.requestPermissionsAsync();
-        if (status !== 'granted') {
-          Alert.alert('Permission to access location was denied');
-          return;
-        }
-  
-        let location = await Location.getCurrentPositionAsync({});
-        this.setState({...(this.state || {}), location:location.coords});
-    }
+    navigation:any;
+    setNavigation= (navigation:any)=> this.navigation = navigation;
 
-    getRegion(){
-        if(!(this.state && this.state.location))
-        return undefined;
-        return {
-            latitude: this.state.location.latitude,
-            longitude:  this.state.location.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }
-    }
     render() {
+        
         return (
-            <View style={styles.container}>
-            <MapView style={styles.mapStyle}  region={this.getRegion()} provider={'google'}>
-                {
-                    this.state && this.state.location && 
-                    <Marker coordinate={{...this.state.location}} />
-                }
-            </MapView>
-            </View>
+            <Stack.Navigator initialRouteName={"mapView"} mode={'modal'} screenOptions={{
+                gestureDirection: 'vertical'
+            }} >
+                <Stack.Screen name={"mapView"} options={{ headerShown:false }}>
+                    {(stackprops)=>{
+                        return (
+                        <View style={styles.container}>
+                            <Drawer.Navigator  drawerPosition={'left'} drawerType={'slide'} initialRouteName="Home" drawerContent={(props:any)=><SideDrawer stack={stackprops} {...props}/>}>
+                                <Drawer.Screen name="Home">
+                                    {(props)=><MapViewRoute stackProps={stackprops}  {...props} returnNavigation={this.setNavigation}/>}
+                                </Drawer.Screen>
+                            </Drawer.Navigator>
+                        </View>
+                        )
+                    }}
+                </Stack.Screen>
+                <Stack.Screen name={"reportAccident"} options={{ headerShown:false }}>
+                    {(props)=>{
+                        return ( <StartingPointComponent {...props}/>)
+                    }}
+                </Stack.Screen >
+            </Stack.Navigator>
         );
     }
 }
@@ -59,14 +67,7 @@ export const routeConfigs = {
 }
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      justifyContent:'center',
-      alignItems:'center'
-    },
-    mapStyle: {
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height,
-      },
+      flex: 1
+    }
 })
 export default home;

@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Platform } from 'react-native';
 import config from '../../config';
 import Text from '../../shared/Text';
 import LottieView from 'lottie-react-native';
@@ -9,12 +9,12 @@ import { StatusBar } from 'expo-status-bar';
 class appTour extends Component<any,any> {
     animation:any;
     state={
-        activeSlide:0
+        activeSlide:((Platform.OS === 'ios')?0:2)
     }
     componentDidMount() {
         setTimeout(()=>{
             this.playAnimation()
-        },4000)
+        },2000)
       }
     
     render() {
@@ -25,7 +25,7 @@ class appTour extends Component<any,any> {
                 <AppTourSwiper activeSlide={(index:any)=>{
                     var beforeState = this.state.activeSlide
                     this.setState({...this.state, activeSlide:index},()=>{
-                        if(beforeState == 2 && this.state.activeSlide != 2)
+                        if(beforeState == (Platform.OS === 'ios'?2:0) && this.state.activeSlide != (Platform.OS === 'ios'?2:0))
                             this.playAnimation()
                     })
                 }} 
@@ -33,7 +33,7 @@ class appTour extends Component<any,any> {
                     this.props.navigation.replace('loginSignup')
                 }}/>
                 </View>
-                {this.state.activeSlide != 2 &&
+                {this.state.activeSlide != (Platform.OS === 'ios'?2:0) &&
                 <View style={{...styles.swipHintContainer} as any}>
                 <LottieView
                 ref={animation => {
