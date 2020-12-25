@@ -5,11 +5,12 @@ import LottieView from 'lottie-react-native';
 import scanID from '../../../../animations/ScanID';
 import { Camera } from 'expo-camera';
 import CameraModal from '../../../../shared/CameraModal';
+import requiredDocs from './requiredDocuments';
 export default class ScanDocs extends Component<any, any> {
     animation:any;
     state = {
         openCameraModel:false
-    }
+    };
     render() {
         return (
             <View style={styles.container}>

@@ -8,6 +8,8 @@ import { ThemeProvider } from 'react-native-elements';
 import * as Font from 'expo-font';
 import config from './config';
 import Text from './shared/Text';
+import {Provider} from 'react-redux';
+import store from './app-state/store';
 
 let customFonts = {
   'custom-regular': require('./assets/Cairo-Regular.ttf'),
@@ -34,11 +36,13 @@ constructor(props:any){
     try{
       return (
         <NavigationContainer>
-          <ThemeProvider theme={config.globalTheme as any}>
-            <View style={styles.container}>
-            {this.state.fontsLoaded &&(<FirstLevelStackNavigator/>)} 
-            </View>
-          </ThemeProvider>
+          <Provider store={store}>
+            <ThemeProvider theme={config.globalTheme as any}>
+              <View style={styles.container}>
+                {this.state.fontsLoaded &&(<FirstLevelStackNavigator/>)} 
+              </View>
+            </ThemeProvider>
+          </Provider>
         </NavigationContainer>
       );
     }catch(e){

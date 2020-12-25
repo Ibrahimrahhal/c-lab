@@ -8,14 +8,15 @@ import LottieView from 'lottie-react-native';
 import { Icon } from 'react-native-elements';
 import CameraModal from '../../../shared/CameraModal';
 // const cameraA = require('../../../animations/cameraA.json')
-
-export default class takePicturesOfCar extends Component<any, any> {
+import {connect} from 'react-redux';
+import { getActiveCar } from '../../../app-state/store';
+import { addCarPictures } from '../../../actions/actions';
+class takePicturesOfCar extends Component<any, any> {
     state = {
         activeCarSide:'front',
         openCameraModel:false
     }
     cameraAnimation:any;
-    takenPhotos:any[]=[];
     render() {
         return (
             <View style={styles.mainContainer}>
@@ -46,15 +47,15 @@ export default class takePicturesOfCar extends Component<any, any> {
                     })} />
                 </View>
             <CameraModal visible={this.state.openCameraModel} onShot={(photo)=>{
-                this.takenPhotos.push(({
+                this.props.addCarPhotoToActiveCar({
                     side:this.state.activeCarSide,
                     photo
-                } as any));
+                });
                 this.setState({
                     ...this.state, 
                     activeCarSide: carSides.find(x=>x.ID==this.state.activeCarSide)?.next,
                     openCameraModel:false
-                })
+                });
             }}
             closeModal={()=>{
                 this.setState({
@@ -121,4 +122,19 @@ const carSides = [
         next:'front',
         desc:"الجهة الامامية"
     },
-]
+];
+const mapStateToProps = (state) => {
+    return {
+        takenPhotos: getActiveCar()?.pictures || [],
+    };
+}
+
+const mapDispatchToProps = dispatch => {
+	return{
+        addCarPhotoToActiveCar : (picture) => {
+            dispatch(addCarPictures(picture));
+        },
+    }
+}
+  
+export default connect(mapStateToProps, mapDispatchToProps)(takePicturesOfCar);

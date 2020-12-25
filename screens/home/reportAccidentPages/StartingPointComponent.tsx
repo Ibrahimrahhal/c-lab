@@ -6,22 +6,25 @@ import SelectCrashPlaces from './SelectCrashPlaces';
 import { Car } from '../../../models/car';
 import TakePicturesOfCar from './takePicturesOfCar';
 import ScanDocs from './scanDocs/ScanDocs';
+import AddOneCar from './addOneCar';
+import { StoreType } from '../../../app-state/store-type';
+import { getActiveAccident, getActiveCar } from '../../../app-state/store';
+import { connect }  from 'react-redux';
+import { initAccident } from '../../../actions/actions';
 const Stack = createStackNavigator();
 
-class StartingPointComponent extends Component {
-    state:{
-        accident?:Accident,
-        activeCar?:Car
-    } = {};
+class StartingPointComponent extends Component<any, any> {
 
     componentDidMount(){
-        this.state.accident = new Accident();
-        this.setState(this.state);
+        this.props.initAccident();
+        setTimeout(()=>{
+            console.log("sasasasa",this.props.accident)
+        }, 20)
     }
 
     render() {
         return (
-            <Stack.Navigator initialRouteName={"scanDocs"} mode={'modal'} screenOptions={{
+            <Stack.Navigator initialRouteName={"addCars"} mode={'modal'} screenOptions={{
                 gestureDirection: 'vertical'
             }} >
                 <Stack.Screen name={'addCars'} options={{
@@ -53,7 +56,23 @@ class StartingPointComponent extends Component {
 
                 }}>
                     {(props)=>{
-                        return <SelectCrashPlaces {...props} activeCar={this.state && this.state.activeCar}/>
+                        return <SelectCrashPlaces {...props}/>
+                    }}
+                </Stack.Screen>
+                <Stack.Screen name={'addOneCar'} options={{
+                    // headerShown:false,
+                    headerTitle:"اضافة مركبة",
+                    title:"اضافة مركبة",
+                    headerTitleStyle:{
+                        fontFamily:'custom-bold',
+                        textAlign:'left'
+                    },
+                    headerStyle:{
+                        direction:'rtl'
+                    }
+                }}>
+                    {(props)=>{
+                        return <AddOneCar {...props}/>
                     }}
                 </Stack.Screen>
                 <Stack.Screen name={'takePicturesOfCar'} options={{
@@ -70,7 +89,7 @@ class StartingPointComponent extends Component {
 
                 }}>
                     {(props)=>{
-                        return <TakePicturesOfCar {...props} activeCar={this.state && this.state.activeCar}/>
+                        return <TakePicturesOfCar {...props}/>
                     }}
                 </Stack.Screen>
                 <Stack.Screen name={'scanDocs'} options={{
@@ -87,7 +106,7 @@ class StartingPointComponent extends Component {
 
                 }}>
                     {(props)=>{
-                        return <ScanDocs {...props} activeCar={this.state && this.state.activeCar}/>
+                        return <ScanDocs {...props}/>
                     }}
                 </Stack.Screen>
             </Stack.Navigator>
@@ -95,4 +114,11 @@ class StartingPointComponent extends Component {
     }
 }
 
-export default StartingPointComponent;
+const mapStateToProps = (state:StoreType) => {
+    return {
+      accident: getActiveAccident(state),
+    }
+  }
+const mapDispatchToProps = { initAccident }
+  
+export default connect(mapStateToProps, mapDispatchToProps)(StartingPointComponent)
