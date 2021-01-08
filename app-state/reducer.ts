@@ -50,8 +50,28 @@ export default (state=initialStatue, action:Action) => {
             (state.activeAccident as any ).activeCarIndex = (getActiveAccident(state) as Accident).involvedCars.length - 1;
             stateToSend = state;
             break;    
+
+        case actionTypes.addCrashPoint: 
+            let actionCar:any = getActiveCar(state) || {};
+            let carPoint:any = actionCar.crashPoints || [];
+            carPoint.push(action.data);
+            actionCar.crashPoints = carPoint;
+            stateToSend = state;
+            break;
+
+        case actionTypes.removeCrashPoint:
+            let actCar:any = getActiveCar(state) || {};
+            let carPoints:any = actCar.crashPoints || [];
+            carPoints = carPoints.filter((point)=>{
+                return point.ID !== action.data
+            })
+            actionCar.crashPoints = carPoints;
+            stateToSend = state;
+            break;
         }
-        return JSON.parse(JSON.stringify(state))
+
+        let strigi = JSON.stringify(stateToSend)
+        return strigi?JSON.parse(JSON.stringify(stateToSend)):state
 }
 
 function getActiveAccident (state:StoreType): Accident| undefined {

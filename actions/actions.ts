@@ -39,3 +39,17 @@ export function initNewCar():Action {
         type: actionTypes.initNewCar
     }
 }
+
+export function addPoint(point:{ x:number, y:number, ID:string}):Action {
+    return {
+        type: actionTypes.addCrashPoint,
+        data: point
+    };
+}
+
+export function removePoint(pointID:string):Action {
+    return {
+        type: actionTypes.addCrashPoint,
+        data: pointID
+    };
+}

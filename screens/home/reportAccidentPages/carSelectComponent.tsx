@@ -3,10 +3,10 @@ import { View, StyleSheet, Dimensions, Image, TouchableWithoutFeedback,Touchable
 import { Icon } from 'react-native-elements';
 import config from '../../../config';
 import {View as A_View} from 'react-native-animatable';
-export default class carSelectComponent extends Component<any,any> {
-    state={
-        points:[]
-    }
+import { connect } from 'react-redux';
+import { addPoint, removePoint } from '../../../actions/actions';
+import { getActiveCar } from '../../../app-state/store';
+class carSelectComponent extends Component<any,any> {
     render() {
         return (
             <View style={styles.conatainer}>
@@ -15,24 +15,20 @@ export default class carSelectComponent extends Component<any,any> {
                     let y = event.nativeEvent.locationY;
                     if(!event.isTrusted)
                     console.log(x,y)
-                    let cancel:any = this.state.points.find((point:any)=>{
-                        return point.inRange(true, x-(getPointDim()), x+(getPointDim()) ) && point.inRange(false, y-(getPointDim()), y+(getPointDim()) )
+                    let cancel:any = this.props.points.find((point:any)=>{
+                        return (x-(getPointDim()) < (true?point.locationX:point.locationY)) && ((true?point.locationX:point.locationY) < x+(getPointDim())) && 
+                        (y-(getPointDim()) < (false?point.locationX:point.locationY)) && ((false?point.locationX:point.locationY) < y+(getPointDim())) 
+
                     });
-                    console.log(cancel);
                     cancel = cancel || (x <50 && y <50);
                     if(cancel){ console.log(cancel);
                         return;}
-                    
-                    (this.state.points as any).push({
-                        locationX:x,
-                        locationY:y,
-                        ID:Date.now(),
-                        inRange:function(isX:boolean, first:number, last:number){
-                            return (first < (isX?this.locationX:this.locationY)) && ((isX?this.locationX:this.locationY) < last);
-                        }
+                    this.props.addPoint({
+                        x,
+                        y,
+                        ID: Date.now().toString()
                     });
-
-                    this.setState({...this.state});
+                    console.log(this.props.points)
                 }}>
                     <View  style={styles.conatainer}>
                     <Image 
@@ -41,13 +37,12 @@ export default class carSelectComponent extends Component<any,any> {
                         resizeMode={"contain"}
                     />
                     <View style={styles.pointsContainer}>
-                       {this.state.points.map((point:any)=>{
-                           return ( <A_View animation={'bounceIn'} key={point.ID} style={{...styles.point,top:point.locationY-(getPointDim()/2), right:point.locationX-(getPointDim()/2)}}>
+                       {this.props.points.map((point:any)=>{
+                           return ( <A_View animation={'bounceIn'} key={point.ID} style={{...styles.point,top:(point.locationY-(getPointDim()/2)) || 0, right:(point.locationX-(getPointDim()/2)) || 0}}>
                                         <TouchableOpacity style={styles.btnInnterContainer} onPress={(event)=>{
                                             event.stopPropagation();
-                                            event.preventDefault()
-                                            this.state.points = this.state.points.filter((p:any)=>p.ID!=point.ID);
-                                            this.setState({...this.state})
+                                            event.preventDefault();
+                                            this.props.removePoint(point.ID);
                                         }}>
                                         <Icon
                                         name='x'
@@ -98,3 +93,12 @@ const styles = StyleSheet.create({
         alignItems:'center',
     }
 })
+const mapStateToProps = (state /*, ownProps*/) => {
+    return {
+      points: getActiveCar(state)?.crashPoints || [],
+    }
+  }
+  
+  const mapDispatchToProps = { addPoint, removePoint }
+  
+  export default connect(mapStateToProps, mapDispatchToProps)(carSelectComponent);

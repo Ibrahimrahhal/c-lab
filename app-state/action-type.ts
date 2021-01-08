@@ -9,5 +9,7 @@ export const actionTypes = {
     setCarModel: 3,
     setCarPlateNumber: 4,
     initAccident: 5,
-    initNewCar: 6
+    initNewCar: 6,
+    addCrashPoint: 7,
+    removeCrashPoint: 8
 }

@@ -16,7 +16,8 @@ export interface Car {
     }>,
     platNumber?: string,
     modelName?: string,
-    type?:string
+    type?:string,
+    crashPoints?:Array<{x:number, y:number, ID:string}>
 }
 export interface StoreType {
     accidents?: Array<Accident>,
